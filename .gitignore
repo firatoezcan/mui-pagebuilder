@@ -1,0 +1,11 @@
+.DS_Store
+node_modules
+.turbo
+*.log
+.next
+dist
+*.local
+.env
+.cache
+.eslintcache
+tsconfig.tsbuildinfo
