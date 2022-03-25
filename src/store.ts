@@ -1,11 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { editorReducer } from "./features/Editor/editorSlice";
+import undoable from "redux-undo";
+import { addComponent, deleteComponent, editorReducer } from "./features/Editor/editorSlice";
 // import { persistStore, persistReducer } from 'redux-persist'
 // import storage from 'redux-persist/lib/storage'
 
 export const store = configureStore({
   reducer: {
-    editor: editorReducer,
+    editor: undoable(editorReducer, {
+      filter: (action) => {
+        console.log(action);
+        const undoableActions = [addComponent.type, deleteComponent.type];
+        return undoableActions.includes(action.type);
+      },
+    }),
   },
 });
 

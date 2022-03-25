@@ -1,8 +1,9 @@
 import { Add, TableRows } from "@mui/icons-material";
-import { Box, Button, Card, CardContent, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Modal, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, Card, CardContent, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Modal, Typography } from "@mui/material";
 import { createSlice } from "@reduxjs/toolkit";
 import { FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ActionCreators } from "redux-undo";
 import { RootState } from "../../store";
 import { renderComponent } from "./componentcreator";
 import { addComponent, closeModal, openModal } from "./editorSlice";
@@ -20,12 +21,18 @@ const style = {
 };
 
 export const Editor: FC = () => {
-  const { componentModalOpen, components } = useSelector((state: RootState) => state.editor);
+  const { componentModalOpen, components } = useSelector((state: RootState) => state.editor.present);
 
   const dispatch = useDispatch();
 
   return (
     <Box mx="auto" maxWidth={1080}>
+      <Box display="flex" justifyContent="flex-end">
+        <ButtonGroup>
+          <Button onClick={() => dispatch(ActionCreators.undo())}>Undo</Button>
+          <Button onClick={() => dispatch(ActionCreators.redo())}>Redo</Button>
+        </ButtonGroup>
+      </Box>
       {components.map((component) => (component.ctx?.parentId ? null : renderComponent(component)))}
       <Box
         component={Button}

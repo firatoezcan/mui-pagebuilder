@@ -30,17 +30,18 @@ const Sidebar: FC = (props) => {
 };
 
 const App: FC = () => {
-  const { components } = useSelector((state: RootState) => state.editor);
+  const { components } = useSelector((state: RootState) => state.editor.present);
 
   const renderTreeItem = (props: ComponentInstance) => {
     const children = components.filter((component) => component.ctx?.parentId === props.id);
 
     return (
-      <TreeItem nodeId={props.id} label={props.componentName}>
+      <TreeItem key={props.id} nodeId={props.id} label={props.componentName}>
         {children.map(renderTreeItem)}
       </TreeItem>
     );
   };
+
   return (
     <Box display="flex">
       <Sidebar>

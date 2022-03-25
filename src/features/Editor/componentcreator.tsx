@@ -1,10 +1,10 @@
 import { Add, ArrowDownward, ArrowUpward, DeleteForever } from "@mui/icons-material";
-import { Box, Button, ButtonGroup, Stack, StackProps, Typography, useTheme } from "@mui/material";
+import { Box, Button, ButtonGroup, Snackbar, Stack, StackProps, Typography, useTheme } from "@mui/material";
 import React, { AriaAttributes, FC, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ulid } from "ulid";
 import { RootState } from "../../store";
-import { EditorState, openModal } from "./editorSlice";
+import { deleteComponent, EditorState, openModal } from "./editorSlice";
 
 type ControllerProps = {
   id: string;
@@ -39,7 +39,7 @@ const Controller: FC<ControllerProps> = (props) => {
               <Add onClick={() => dispatch(openModal({ parentId: id }))} />
             </Button>
             <Button size="small">
-              <DeleteForever />
+              <DeleteForever onClick={() => dispatch(deleteComponent(id))} />
             </Button>
             <Button size="small">
               <ArrowDownward />
@@ -56,7 +56,7 @@ const Controller: FC<ControllerProps> = (props) => {
 
 const createComponent = <P, T extends FC>(Component: T, controls: any, defaultProps: Omit<P, keyof AriaAttributes>, allowChilds: boolean) => {
   const WithController: FC<ControllerProps> = (props) => {
-    const { components } = useSelector((state: RootState) => state.editor);
+    const { components } = useSelector((state: RootState) => state.editor.present);
 
     const children = components.filter((component) => component.ctx?.parentId === props.id);
 

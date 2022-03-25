@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { WritableDraft } from "immer/dist/internal";
 import { AllowedComponents, ComponentInstance, createComponentInstance } from "./componentcreator";
+import undoable, { StateWithHistory } from "redux-undo";
+import { RootState } from "../../store";
 
 export type EditorState = {
   componentModalOpen: boolean;
@@ -32,10 +34,15 @@ const editorSlice = createSlice({
       state.components.push(createComponentInstance(action.payload, state.insertionContext));
       _closeModal(state);
     },
+    deleteComponent: (state, action: PayloadAction<string>) => {
+      state.components = state.components.filter((component) => component.id !== action.payload);
+    },
   },
 });
 
+export const selectEditor = (state: RootState) => state.editor;
+
 // Action creators are generated for each case reducer function
-export const { closeModal, openModal, addComponent } = editorSlice.actions;
+export const { closeModal, openModal, addComponent, deleteComponent } = editorSlice.actions;
 
 export const editorReducer = editorSlice.reducer;
