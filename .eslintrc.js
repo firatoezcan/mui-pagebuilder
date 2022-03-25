@@ -104,5 +104,16 @@ module.exports = {
     "import/extensions": "off",
     "import/no-unresolved": "off",
     "react/no-unescaped-entities": "off",
+    "no-restricted-imports": [
+      "error",
+      {
+        name: "@mui/system",
+        message: "Please use @mui/material instead",
+      },
+      {
+        name: "@mui/system/*/*",
+        message: "Please use @mui/material instead",
+      },
+    ],
   },
 };
