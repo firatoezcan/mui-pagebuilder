@@ -3,7 +3,10 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { TreeItem, TreeView } from "@mui/lab";
 import { Box, createTheme, CssBaseline, Drawer, List, ListItem, ListItemText, ThemeProvider } from "@mui/material";
 import { FC } from "react";
+import { useSelector } from "react-redux";
+import { ComponentInstance } from "./features/Editor/componentcreator";
 import { Editor } from "./features/Editor/Editor";
+import { RootState } from "./store";
 
 const Sidebar: FC = (props) => {
   const { children } = props;
@@ -27,6 +30,17 @@ const Sidebar: FC = (props) => {
 };
 
 const App: FC = () => {
+  const { components } = useSelector((state: RootState) => state.editor);
+
+  const renderTreeItem = (props: ComponentInstance) => {
+    const children = components.filter((component) => component.ctx?.parentId === props.id);
+
+    return (
+      <TreeItem nodeId={props.id} label={props.componentName}>
+        {children.map(renderTreeItem)}
+      </TreeItem>
+    );
+  };
   return (
     <Box display="flex">
       <Sidebar>
@@ -36,15 +50,7 @@ const App: FC = () => {
           </ListItem>
           <ListItem>
             <TreeView aria-label="file system navigator" defaultCollapseIcon={<ExpandMoreIcon />} defaultExpandIcon={<ChevronRightIcon />} sx={{ flexGrow: 1, overflowY: "auto" }}>
-              <TreeItem nodeId="1" label="Applications">
-                <TreeItem nodeId="2" label="Calendar" />
-              </TreeItem>
-              <TreeItem nodeId="5" label="Documents">
-                <TreeItem nodeId="10" label="OSS" />
-                <TreeItem nodeId="6" label="MUI">
-                  <TreeItem nodeId="8" label="index.js" />
-                </TreeItem>
-              </TreeItem>
+              {components.map((component) => (component.ctx?.parentId ? null : renderTreeItem(component)))}
             </TreeView>
           </ListItem>
         </List>
