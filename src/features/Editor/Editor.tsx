@@ -29,9 +29,8 @@ export const Editor: FC = () => {
       {components.map((component) => (component.ctx?.parentId ? null : renderComponent(component)))}
       <Box
         component={Button}
-        border="2px solid"
         borderColor="primary.dark"
-        boxShadow={(theme) => `${theme.palette.primary.dark} 0px 0px 0px 2px`}
+        boxShadow={(theme) => `${theme.palette.primary.dark} 0px 0px 0px 1px`}
         mt={0.5}
         height={(theme) => theme.spacing(16)}
         display="flex"

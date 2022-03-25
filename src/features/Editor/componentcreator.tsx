@@ -17,7 +17,10 @@ type ControllerProps = {
 const Controller: FC<ControllerProps> = (props) => {
   const { id, componentName, children } = props;
   const [isHovered, setIsHovered] = useState(false);
+  const dispatch = useDispatch();
+
   const theme = useTheme();
+
   return (
     <Box onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} position="relative">
       {children}
@@ -26,14 +29,14 @@ const Controller: FC<ControllerProps> = (props) => {
           display="flex"
           alignItems="flex-start"
           justifyContent="space-between"
-          sx={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, boxShadow: `${theme.palette.primary.dark} 0px 0px 0px 2px`, pointerEvents: "none", userSelect: "none" }}
+          sx={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, boxShadow: `${theme.palette.primary.dark} 0px 0px 0px 1px`, pointerEvents: "none", userSelect: "none" }}
         >
           <Typography variant="h5" component="span" color="white" position="relative" sx={{ backgroundColor: theme.palette.primary.dark }} px={1} py={0.5}>
             {componentName}
           </Typography>
           <ButtonGroup variant="contained" aria-label="outlined primary button group" sx={{ pointerEvents: "auto" }}>
             <Button size="small">
-              <Add />
+              <Add onClick={() => dispatch(openModal({ parentId: id }))} />
             </Button>
             <Button size="small">
               <DeleteForever />
@@ -55,7 +58,6 @@ const createComponent = <P, T extends FC>(Component: T, controls: any, defaultPr
   const WithController: FC<ControllerProps> = (props) => {
     const { components } = useSelector((state: RootState) => state.editor);
 
-    const dispatch = useDispatch();
     const children = components.filter((component) => component.ctx?.parentId === props.id);
 
     return (
@@ -63,21 +65,6 @@ const createComponent = <P, T extends FC>(Component: T, controls: any, defaultPr
         <Controller {...props}>
           <Component {...(defaultProps as any)}>{children.map((component) => renderComponent(component))}</Component>
         </Controller>
-        <Box
-          component={Button}
-          border="2px solid"
-          borderColor="primary.dark"
-          boxShadow={(theme) => `${theme.palette.primary.dark} 0px 0px 0px 2px`}
-          mt={0.5}
-          height={(theme) => theme.spacing(6)}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          width="100%"
-          onClick={() => dispatch(openModal({ parentId: props.id }))}
-        >
-          <Add sx={(theme) => ({ width: theme.spacing(6), height: theme.spacing(6) })} />
-        </Box>
       </>
     );
   };
